@@ -1,5 +1,6 @@
 import React from 'react';
 import { VehicleProvider, VehicleConsumer } from './vehicleContext.js';
+import { CarProvider, CarConsumer } from './carContext.js';
 
 export class Vehicle extends React.Component {
 	constructor (props) {
@@ -17,10 +18,32 @@ export class Vehicle extends React.Component {
 	}
 }
 
-const Car = () => {
-	return <Audi/>
+class Car extends Vehicle {
+	constructor (props) {
+		super(props);
+		this.state = {
+			wheels: 4
+		}
+	}
+	render () {
+		return <CarProvider value={this.state.wheels}><Audi/></CarProvider>
+	}
 }
 
 const Audi = () => {
-	return <VehicleConsumer>{context => <div>{context}</div>}</VehicleConsumer>
+	return (
+		<VehicleConsumer>
+			{
+				action => (
+					<CarConsumer>
+						{
+							wheels => (
+								<div>{`Audi: with ${wheels} wheels, used for ${action}.`}</div>
+							)
+						}
+					</CarConsumer>
+				)
+			}
+		</VehicleConsumer>
+	)
 }
